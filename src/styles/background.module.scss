@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+.box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+.red {
+  background-color: red;
+}
+.orange {
+  background-color: orangered;
+}
+.yellow {
+  background-color: yellowgreen;
+}
+.green {
+  background-color: green;
+}
+
+.contents_area {
+  z-index: 3;
+  position: relative;
+}
+.cont {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 40px;
+  text-align: center;
+  font-weight: 700;
+}
