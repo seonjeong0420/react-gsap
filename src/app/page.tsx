@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import styles from "@/styles/test.module.scss";
+import { useRef } from "react";
 
 const Page = () => {
   gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -49,6 +50,29 @@ const Page = () => {
       .to(".scrollflip__subheading", { opacity: 0, y: -10 });
   });
 
+  const basicTest = useRef<HTMLDivElement>(null);
+  useGSAP(() => {
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: ".scrollbasic",
+        endTrigger: ".test123",
+        scrub: true,
+        pin: true,
+        invalidateOnRefresh: true,
+        // markers: true,
+      },
+    });
+    const timeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".scrollbasic",
+        start: "top top",
+        end: "+=100",
+        markers: true,
+      },
+    });
+    timeline.to(".scrollbasic__heading", { opacity: 1, y: 0 }).to(".scrollbasic__subheading", { opacity: 1, y: 0 });
+  });
+
   return (
     <div className={styles.pagemain}>
       <section className={`scrollscale ${styles.scrollscale}`}>
@@ -78,22 +102,20 @@ const Page = () => {
         </div>
       </section>
 
-      <div>
-        <section className={`box_section2`}>
-          <article className={styles.article}>
-            <h2 className="section2_heading">ARTICLE1 HEADING TEXT</h2>
-            <p className="text">text</p>
-            <div className={`flip_container ${styles.flip_container}`}>
-              <div className={`box_flip ${styles.box_flip}`}>BOX1</div>
-              <div className={`box_flip ${styles.box_flip}`}>BOX2</div>
-              <div className={`box_flip ${styles.box_flip}`}>BOX3</div>
-              <div className={`box_flip ${styles.box_flip}`}>BOX4</div>
-            </div>
-          </article>
-        </section>
-      </div>
+      <section className={`scrollbasic ${styles.scrollbasic}`}>
+        <div className={`scrollbasic__textarea ${styles.scrollbasic__textarea}`}>
+          <h2 className={`scrollbasic__heading ${styles.scrollbasic__heading}`}>ARTICLE1 HEADING TEXT</h2>
+          <p className={`scrollbasic__subheading ${styles.scrollbasic__subheading}`}>paragraph text</p>
+        </div>
+        <div className={`scrollbasic__container ${styles.scrollbasic__container}`} ref={basicTest}>
+          <div className={`box_basic ${styles.box_basic}`}>BOX1</div>
+          <div className={`box_basic ${styles.box_basic}`}>BOX2</div>
+          <div className={`box_basic ${styles.box_basic}`}>BOX3</div>
+          <div className={`box_basic ${styles.box_basic}`}>BOX4</div>
+        </div>
+      </section>
 
-      <article className={styles.article}>
+      <article className={`${styles.article} test123`}>
         <h2>ARTICLE2 HEADING TEXT</h2>
         <div className={(styles.box, styles.box_height60)}>BOX1</div>
         <div className={(styles.box, styles.box_height45)}>BOX2</div>
