@@ -8,7 +8,6 @@ import styles from "@/styles/background.module.scss";
 const Page = () => {
   gsap.registerPlugin(ScrollTrigger);
   useEffect(() => {
-    /** lenis : 스크롤 부드럽게 해주는 기능 */
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -40,7 +39,7 @@ const Page = () => {
     gsap.utils.toArray(".cont").forEach((box, index) => {
       ScrollTrigger.create({
         trigger: box as HTMLDivElement,
-        start: "top 80%",
+        start: "top center",
         end: "bottom top",
         onEnter: () => {
           gsap.to(div[index], { opacity: 1, zIndex: 1, duration: 0.7 });
@@ -48,7 +47,7 @@ const Page = () => {
         onLeaveBack: () => {
           gsap.to(div[index], { opacity: 0, zIndex: 0, duration: 0.7 });
         },
-        markers: true,
+        // markers: true,
       });
     });
   }, []);
