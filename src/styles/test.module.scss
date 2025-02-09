@@ -112,11 +112,12 @@
 
   gap: 100px;
   align-items: flex-start;
-  margin-top: 100px;
+
   &__textarea {
     display: flex;
     flex-direction: column;
     gap: 24px;
+    padding-top: 100px;
   }
   &__heading {
     opacity: 0;
@@ -130,15 +131,18 @@
   }
   &__container {
     opacity: 0;
+    transform: translateY(10px);
     display: flex;
     gap: 20px;
     flex-direction: column;
+    margin-top: 100px;
   }
   .box_basic {
     width: 450px;
     height: 600px;
     border-radius: 10px;
     background-color: #ede;
+    color: #000;
   }
 }
 
