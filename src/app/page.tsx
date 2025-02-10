@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import styles from "@/styles/test.module.scss";
+import Image from "next/image";
 
 const Page = () => {
   gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -22,10 +23,10 @@ const Page = () => {
     });
     timeline
       .to(".scrollscale__heading", { y: -100, opacity: 0 })
-      .to(".scrollscale__video", { scale: 0.7, borderRadius: 50 })
-      .to(".scrollscale__textbox", { opacity: 1, backgroundColor: "#641875", duration: 2 })
-      .to(textArray, { opacity: 1, stagger: 5, duration: 5 }, "+=2")
-      .to(".scrollscale__text", { opacity: 0, y: -10, duration: 2 })
+      .to(".scrollscale__video", 3, { scale: 0.7, borderRadius: 50 })
+      .to(".scrollscale__textbox", 2, { opacity: 1, backgroundColor: "#641875" })
+      .to(textArray, 5, { opacity: 1, stagger: 5 }, "+=2")
+      .to(".scrollscale__text", 2, { opacity: 0, y: -10 })
       .to(".scrollscale__textbox", { opacity: 1, backgroundColor: "#641875" }, "+=5");
   });
 
@@ -42,9 +43,9 @@ const Page = () => {
       },
     });
     timeline
-      .to(".scrollflip__text", { opacity: 1, y: 0, stagger: 1 })
+      .to(".scrollflip__text", { opacity: 1, y: 0, stagger: 0.5 })
       .to(".flip_container", { opacity: 1 })
-      .to(flip, { scale: 0.8, rotate: 30, x: 200, y: -100, stagger: 0.5, opacity: 0 })
+      .to(flip, { delay: 1, scale: 0.8, rotate: 30, x: 200, y: -100, stagger: 2, opacity: 0 })
       .to(".scrollflip__text", { opacity: 0, y: -10, stagger: 0.5 });
   });
 
@@ -61,12 +62,29 @@ const Page = () => {
       },
     });
     timeline
-      .to(".scrollbasic__text", { opacity: 1, y: 0, stagger: 1 })
+      .to(".scrollbasic__text", { opacity: 1, y: 0, stagger: 0.5 })
       .to(".scrollbasic__container", { delay: 0.1, opacity: 1, y: 0 })
-      .to(".scrollbasic__container", {
+      .to(".scrollbasic__container", 5, {
         yPercent: `-100`,
       })
       .to(".scrollbasic__text", { opacity: 0, y: -10, stagger: 0.5 });
+  });
+
+  useGSAP(() => {
+    const timeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".scrollarticle",
+        end: "+=500%",
+        scrub: true,
+        pin: true,
+      },
+    });
+
+    timeline
+      .to(".scrollarticle__img", 2, { opacity: 1 })
+      .to(".scrollarticle__img", 2, { opacity: 0 })
+      .to(".scrollarticle__text", 1, { opacity: 1, y: 0, stagger: 1 }, "<")
+      .to(".scrollarticle__text", 0.5, { opacity: 0, y: -10 });
   });
 
   return (
@@ -113,23 +131,22 @@ const Page = () => {
         </div>
       </section>
 
-      <article className={`scrollarticle ${styles.article}`}>
-        <h2>ARTICLE2 HEADING TEXT</h2>
-        <div className={(styles.box, styles.box_height60)}>BOX1</div>
-        <div className={(styles.box, styles.box_height45)}>BOX2</div>
-        <div className={(styles.box, styles.box_height60)}>BOX3</div>
-        <div className={(styles.box, styles.box_height60)}>BOX4</div>
-      </article>
+      <section className={`scrollarticle ${styles.scrollarticle}`}>
+        <span className={`scrollarticle__img ${styles.scrollarticle__img}`}>
+          <Image src={"/img_temp.png"} fill alt="임시 로고 이미지" />
+        </span>
+        <h2>
+          <span className={`scrollarticle__text ${styles.scrollarticle__desc}`}>DESCRIPTION 1</span>
+          <span className={`scrollarticle__text ${styles.scrollarticle__desc}`}>DESCRIPTION 2</span>
+        </h2>
+      </section>
 
-      <article className={styles.article}>
-        <h2>ARTICLE3 HEADING TEXT</h2>
-        <div className={styles.flip_container}>
-          <div className={styles.box_flip}>BOX1</div>
-          <div className={styles.box_flip}>BOX2</div>
-          <div className={styles.box_flip}>BOX3</div>
-          <div className={styles.box_flip}>BOX4</div>
-        </div>
-      </article>
+      <section className={`timelineSVG ${styles.timelineSVG}`}></section>
+
+      <footer className={`footer ${styles.footer}`}>
+        <h2 className={`text1`}>footer</h2>
+        <p className={`text2`}>footer DESC</p>
+      </footer>
     </div>
   );
 };
