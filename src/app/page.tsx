@@ -42,12 +42,10 @@ const Page = () => {
       },
     });
     timeline
-      .to(".scrollflip__heading", { opacity: 1, y: 0 })
-      .to(".scrollflip__subheading", { opacity: 1, y: 0 })
+      .to(".scrollflip__text", { opacity: 1, y: 0, stagger: 0.2 })
       .to(".flip_container", { opacity: 1 })
       .to(flip, { scale: 0.8, rotate: 30, x: 200, y: -100, stagger: 0.5, opacity: 0 })
-      .to(".scrollflip__heading", { opacity: 0, y: -10 })
-      .to(".scrollflip__subheading", { opacity: 0, y: -10 });
+      .to(".scrollflip__text", { opacity: 0, y: -10, stagger: 0.2 });
   });
 
   useGSAP(() => {
@@ -63,14 +61,12 @@ const Page = () => {
       },
     });
     timeline
-      .to(".scrollbasic__heading", { duration: 0.1, opacity: 1, y: 0 })
-      .to(".scrollbasic__subheading", { duration: 0.1, opacity: 1, y: 0 })
+      .to(".scrollbasic__text", { opacity: 1, y: 0, stagger: 0.2 })
       .to(".scrollbasic__container", { delay: 0.1, opacity: 1, y: 0 })
       .to(".scrollbasic__container", {
         yPercent: `-100`,
       })
-      .to(".scrollbasic__heading", { duration: 0.1, opacity: 0, y: -10 })
-      .to(".scrollbasic__subheading", { duration: 0.1, opacity: 0, y: -10 });
+      .to(".scrollbasic__text", { opacity: 0, y: -10, stagger: 0.2 });
   });
 
   return (
@@ -89,8 +85,8 @@ const Page = () => {
 
       <section className={`scrollflip ${styles.scrollflip}`}>
         <div className={`scrollflip__textarea ${styles.scrollflip__textarea}`}>
-          <h2 className={`scrollflip__heading ${styles.scrollflip__heading}`}>FILP HEADING TEXT</h2>
-          <p className={`scrollflip__subheading ${styles.scrollflip__subheading}`}>paragraph text</p>
+          <h2 className={`scrollflip__text ${styles.scrollflip__heading}`}>FILP HEADING TEXT</h2>
+          <p className={`scrollflip__text ${styles.scrollflip__subheading}`}>paragraph text</p>
         </div>
         <div className={`scrollflip__boxarea ${styles.scrollflip__boxarea}`}>
           <div className={`flip_container ${styles.flip_container}`}>
@@ -104,8 +100,8 @@ const Page = () => {
 
       <section className={`scrollbasic ${styles.scrollbasic}`}>
         <div className={`scrollbasic__textarea ${styles.scrollbasic__textarea}`}>
-          <h2 className={`scrollbasic__heading ${styles.scrollbasic__heading}`}>ARTICLE1 HEADING TEXT</h2>
-          <p className={`scrollbasic__subheading ${styles.scrollbasic__subheading}`}>paragraph text</p>
+          <h2 className={`scrollbasic__text ${styles.scrollbasic__heading}`}>ARTICLE1 HEADING TEXT</h2>
+          <p className={`scrollbasic__text ${styles.scrollbasic__subheading}`}>paragraph text</p>
         </div>
         <div className={`scrollbasic__container ${styles.scrollbasic__container}`}>
           <div className={`${styles.inner}`}>
