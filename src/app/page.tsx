@@ -16,8 +16,8 @@ const Page = () => {
         pin: true,
         pinSpacing: true,
         start: "top top",
-        end: "+=400%",
-        scrub: true,
+        end: "+=500%",
+        scrub: 0.5,
       },
     });
     timeline
@@ -25,7 +25,8 @@ const Page = () => {
       .to(".scrollscale__video", { scale: 0.7, borderRadius: 50 })
       .to(".scrollscale__textbox", { opacity: 1, backgroundColor: "#641875", duration: 2 })
       .to(textArray, { opacity: 1, stagger: 1, delay: 2 })
-      .to(".scrollscale__text", { opacity: 0, y: -10 });
+      .to(".scrollscale__text", { opacity: 0, y: -10, duration: 2 })
+      .to(".scrollscale__textbox", { opacity: 1, backgroundColor: "#641875" }, "+=3");
   });
 
   useGSAP(() => {
