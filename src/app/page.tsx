@@ -24,9 +24,9 @@ const Page = () => {
       .to(".scrollscale__heading", { y: -100, opacity: 0 })
       .to(".scrollscale__video", { scale: 0.7, borderRadius: 50 })
       .to(".scrollscale__textbox", { opacity: 1, backgroundColor: "#641875", duration: 2 })
-      .to(textArray, { opacity: 1, stagger: 1, delay: 2 })
+      .to(textArray, { opacity: 1, stagger: 5, duration: 5 }, "+=2")
       .to(".scrollscale__text", { opacity: 0, y: -10, duration: 2 })
-      .to(".scrollscale__textbox", { opacity: 1, backgroundColor: "#641875" }, "+=3");
+      .to(".scrollscale__textbox", { opacity: 1, backgroundColor: "#641875" }, "+=5");
   });
 
   useGSAP(() => {
@@ -42,10 +42,10 @@ const Page = () => {
       },
     });
     timeline
-      .to(".scrollflip__text", { opacity: 1, y: 0, stagger: 0.2 })
+      .to(".scrollflip__text", { opacity: 1, y: 0, stagger: 1 })
       .to(".flip_container", { opacity: 1 })
       .to(flip, { scale: 0.8, rotate: 30, x: 200, y: -100, stagger: 0.5, opacity: 0 })
-      .to(".scrollflip__text", { opacity: 0, y: -10, stagger: 0.2 });
+      .to(".scrollflip__text", { opacity: 0, y: -10, stagger: 0.5 });
   });
 
   useGSAP(() => {
@@ -61,12 +61,12 @@ const Page = () => {
       },
     });
     timeline
-      .to(".scrollbasic__text", { opacity: 1, y: 0, stagger: 0.2 })
+      .to(".scrollbasic__text", { opacity: 1, y: 0, stagger: 1 })
       .to(".scrollbasic__container", { delay: 0.1, opacity: 1, y: 0 })
       .to(".scrollbasic__container", {
         yPercent: `-100`,
       })
-      .to(".scrollbasic__text", { opacity: 0, y: -10, stagger: 0.2 });
+      .to(".scrollbasic__text", { opacity: 0, y: -10, stagger: 0.5 });
   });
 
   return (
