@@ -1,8 +1,6 @@
 import React from "react";
 
-type Props = {};
-
-const page = (props: Props) => {
+const page = () => {
   return (
     <div>
       {/* panel 스크롤 시 순차적으로 show

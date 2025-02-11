@@ -43,9 +43,9 @@ const Page = () => {
       },
     });
     timeline
-      .to(".scrollflip__text", { opacity: 1, y: 0, stagger: 0.5 })
-      .to(".flip_container", { opacity: 1 })
-      .to(flip, { delay: 1, scale: 0.8, rotate: 30, x: 200, y: -100, stagger: 2, opacity: 0 })
+      .to(".scrollflip__text", 1, { opacity: 1, y: 0, stagger: 1 })
+      .to(".flip_container", 1, { opacity: 1 })
+      .to(flip, 3, { delay: 1, scale: 0.8, rotate: 30, x: 400, y: -200, stagger: 2, opacity: 0 })
       .to(".scrollflip__text", { opacity: 0, y: -10, stagger: 0.5 });
   });
 
@@ -62,7 +62,7 @@ const Page = () => {
       },
     });
     timeline
-      .to(".scrollbasic__text", { opacity: 1, y: 0, stagger: 0.5 })
+      .to(".scrollbasic__text", 1, { opacity: 1, y: 0, stagger: 1 })
       .to(".scrollbasic__container", { delay: 0.1, opacity: 1, y: 0 })
       .to(".scrollbasic__container", 5, {
         yPercent: `-100`,
@@ -81,8 +81,8 @@ const Page = () => {
     });
 
     timeline
-      .to(".scrollarticle__img", 2, { opacity: 1 })
-      .to(".scrollarticle__img", 2, { opacity: 0 })
+      .to(".scrollarticle__img", 1, { opacity: 1 })
+      .to(".scrollarticle__img", 1, { opacity: 0 })
       .to(".scrollarticle__text", 1, { opacity: 1, y: 0, stagger: 1 }, "<")
       .to(".scrollarticle__text", 0.5, { opacity: 0, y: -10 });
   });
