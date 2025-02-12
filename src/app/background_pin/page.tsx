@@ -24,7 +24,6 @@ const Page = () => {
     /** bgColor */
     const bgColor = ["#256dda", "#fb6250", "#191f28", "#8059e3"];
     const scenes = gsap.utils.toArray(".scene") as HTMLDivElement[];
-
     scenes.forEach((items, index) => {
       const item = items as HTMLDivElement;
 
@@ -61,8 +60,6 @@ const Page = () => {
       });
 
       const sceneInner = item.querySelector(".scene_inner") as HTMLDivElement;
-      const scrollHeight = document.querySelector(".scrollbasic__container") as HTMLDivElement;
-      console.log(scrollHeight.offsetHeight, scrollHeight.clientHeight);
 
       if (sceneInner) {
         gsap
@@ -70,11 +67,8 @@ const Page = () => {
             scrollTrigger: {
               trigger: sceneInner,
               start: () => ScrollTrigger.getById(`scene-${index}`)?.start || "top top",
-              // end: () =>
-              //   ScrollTrigger.getById(`scene-${index}`)?.end || "bottom top",
               end: () => `+=${item.offsetHeight * 5}`, // ⬅ 기존보다 더 길게 설정
-              scrub: 0.5,
-              // markers: true,
+              scrub: true,
             },
           })
           .fromTo(sceneInner.querySelector(".heading_text"), { opacity: 0, y: 50, duration: 0.1 }, { opacity: 1, y: 0, duration: 0.1 })
@@ -83,22 +77,30 @@ const Page = () => {
           .to(sceneInner.querySelector(".box_content"), { opacity: 0, y: -50 }, "+=3")
           .to(sceneInner.querySelector(".box_heading"), { opacity: 0, y: -50 });
 
-        gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: ".scrollbasic__container",
-              start: () => ScrollTrigger.getById(`scene-${index}`)?.start || "top top",
-              end: `${item.offsetHeight * 4} top`,
-              scrub: true,
-              invalidateOnRefresh: true,
-              markers: true,
-            },
-          })
-          .to(".scrollbasic__container", 5, { delay: 1.5, opacity: 1, y: 0 }, "+=3")
-          .to(".scrollbasic__container", 10, { y: `-${scrollHeight.offsetHeight + 50}` });
+        // gsap scroll container
+        gsapScroll(ScrollTrigger.getById(`scene-${index}`)?.start, item);
       }
     });
   }, []);
+
+  const gsapScroll = (param, paramInner) => {
+    const scrollheight = document.getElementById("scene-1")?.offsetHeight || 0;
+    if (scrollheight) {
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: ".scrollbasic__container",
+            start: () => param || "top top",
+            end: `${paramInner.offsetHeight * 4.5} top`,
+            scrub: true,
+            invalidateOnRefresh: true,
+            markers: true,
+          },
+        })
+        .to(".scrollbasic__container", { opacity: 1, y: 0 })
+        .to(".scrollbasic__container", { y: `-${scrollheight + 50}` });
+    }
+  };
 
   return (
     <div>
@@ -121,17 +123,14 @@ const Page = () => {
               <h2 className={`heading_text ${styles.heading_text}`}>SECTION 02</h2>
               <p className={`heading_desc ${styles.heading_desc}`}>section description</p>
             </div>
-            {/* <div className={`box_content ${styles.box_content}`}>과연 이게 성공할 것인가 ?!</div> */}
-            {/* <div className={`box_content ${styles.box_content}`}> */}
-            <div className={`scrollbasic__container ${styles.scrollbasic__container}`}>
-              {/* <div className={`${styles.inner}`}> */}
-              <div className={`box_basic ${styles.box_basic}`}>BOX1</div>
-              <div className={`box_basic ${styles.box_basic}`}>BOX2</div>
-              <div className={`box_basic ${styles.box_basic}`}>BOX3</div>
-              <div className={`box_basic ${styles.box_basic}`}>BOX4</div>
+            <div className={`box_content ${styles.box_content}`}>
+              <div className={`scrollbasic__container ${styles.scrollbasic__container}`}>
+                <div className={`box_basic ${styles.box_basic}`}>BOX1</div>
+                <div className={`box_basic ${styles.box_basic}`}>BOX2</div>
+                <div className={`box_basic ${styles.box_basic}`}>BOX3</div>
+                <div className={`box_basic ${styles.box_basic}`}>BOX4</div>
+              </div>
             </div>
-            {/* </div> */}
-            {/* </div> */}
           </div>
         </div>
         <div className={`scene ${styles.scene}`}>
