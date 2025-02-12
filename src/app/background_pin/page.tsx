@@ -97,7 +97,7 @@ const Page = () => {
             markers: true,
           },
         })
-        .to(".scrollbasic__container", { opacity: 1, y: 0 })
+        .to(".scrollbasic__container", { opacity: 1 })
         .to(".scrollbasic__container", { y: `-${scrollheight + 50}` });
     }
   };
