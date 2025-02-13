@@ -3,6 +3,7 @@
 .background {
   opacity: 0;
   overflow: hidden;
+  z-index: 1;
   position: fixed;
   top: 0;
   left: 0;
@@ -11,8 +12,12 @@
   align-items: center;
   width: 100vw;
   height: 100vh;
+  &.active {
+    opacity: 0 !important;
+  }
 }
 .contents_area {
+  z-index: 1;
   position: relative;
 }
 .scene {
@@ -72,5 +77,27 @@
     border-radius: 10px;
     background-color: #ede;
     color: #000;
+  }
+}
+
+.footer {
+  z-index: 0;
+  // position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  text-align: center;
+  background-color: white;
+  h2 {
+    font-size: 72px;
+  }
+  p {
+    margin-top: 10px;
+    font-size: 60px;
   }
 }
