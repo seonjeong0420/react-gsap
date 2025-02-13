@@ -1,15 +1,50 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "@studio-freight/lenis";
 import styles from "@/styles/backgroundpin.module.scss";
 
+const useScrollPosition = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const scrollYRef = useRef(0); // 최신 scrollY 값을 추적하기 위한 ref
+
+  useEffect(() => {
+    const footer = document.querySelector(".footer") as HTMLElement;
+    const contents_area = document.querySelector(
+      ".contents_area"
+    ) as HTMLElement;
+
+    if (!footer || !contents_area) return;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const threshold = contents_area.clientHeight - footer.clientHeight * 4;
+
+      if (currentScrollY > threshold) {
+        setScrollY(currentScrollY);
+        scrollYRef.current = currentScrollY; // ref를 통해 최신 scrollY 유지
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll); // 이벤트 정리
+    };
+  }, []);
+
+  return scrollY;
+};
+
 const Page = () => {
   gsap.registerPlugin(ScrollTrigger);
   const backgroundRef = useRef<HTMLDivElement>(null);
+  const scrollY = useScrollPosition();
 
   useEffect(() => {
+    const footer = document.querySelector(".footer") as HTMLElement;
+
     const lenis = new Lenis({
       duration: 1.2,
       // duration: 2.5, // ⬅ 기존보다 더 길게 설정
@@ -17,16 +52,10 @@ const Page = () => {
     });
     const raf = (time) => {
       lenis.raf(time);
+      ScrollTrigger.update();
       requestAnimationFrame(raf);
     };
     requestAnimationFrame(raf);
-
-    // ScrollTrigger.create({
-    //   trigger: ".endTrigger",
-    //   start: "top 5%",
-    //   markers: true,
-    //   toggleClass: { targets: ".background", className: styles.active },
-    // });
 
     /** bgColor */
     const bgColor = ["#256dda", "#fb6250", "#191f28", "#8059e3"];
@@ -37,10 +66,9 @@ const Page = () => {
       ScrollTrigger.create({
         trigger: item,
         start: "top top",
-        end: () => `+=${item.offsetHeight}`, // 각 씬의 높이를 기준으로 끝나는 위치 설정
-        // end: () => `+=${item.offsetHeight * 5}`, // ⬅ 기존보다 더 길게 설정
+        // end: () => `+=${item.offsetHeight}`, // 각 씬의 높이를 기준으로 끝나는 위치 설정
+        end: () => `+=${item.offsetHeight * 5}`, // ⬅ 기존보다 더 길게 설정
         endTrigger: ".endTrigger",
-        markers: true,
         pin: true,
         onEnter: () => {
           gsap.to(".background", {
@@ -62,24 +90,53 @@ const Page = () => {
           .timeline({
             scrollTrigger: {
               trigger: sceneInner,
-              start: () => ScrollTrigger.getById(`scene-${index}`)?.start || "top top",
-              end: () => `+=${item.offsetHeight}`,
-              scrub: 10,
-              // end: () => `+=${item.offsetHeight * 5}`, // ⬅ 기존보다 더 길게 설정
-              // scrub: true,
+              start: () =>
+                ScrollTrigger.getById(`scene-${index}`)?.start || "top top",
+              end: () => `+=${item.offsetHeight * 5}`, // ⬅ 기존보다 더 길게 설정
+              scrub: true,
             },
           })
-          .fromTo(sceneInner.querySelector(".heading_text"), { opacity: 0, y: 50, duration: 0.1 }, { opacity: 1, y: 0, duration: 0.1 })
-          .fromTo(sceneInner.querySelector(".heading_desc"), { opacity: 0, y: 50, duration: 0.1 }, { opacity: 1, y: 0, duration: 0.1 })
-          .fromTo(sceneInner.querySelector(".box_content"), { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.1 })
+          .fromTo(
+            sceneInner.querySelector(".heading_text"),
+            { opacity: 0, y: 50, duration: 0.1 },
+            { opacity: 1, y: 0, duration: 0.1 }
+          )
+          .fromTo(
+            sceneInner.querySelector(".heading_desc"),
+            { opacity: 0, y: 50, duration: 0.1 },
+            { opacity: 1, y: 0, duration: 0.1 }
+          )
+          .fromTo(
+            sceneInner.querySelector(".box_content"),
+            { opacity: 0, y: 50 },
+            { opacity: 1, y: 0, duration: 0.1 }
+          )
           .add("label")
-          .to(sceneInner.querySelector(".box_content"), { opacity: 0, y: -50 }, "+=3")
+          .to(
+            sceneInner.querySelector(".box_content"),
+            { opacity: 0, y: -50 },
+            "+=3"
+          )
           .to(sceneInner.querySelector(".box_heading"), { opacity: 0, y: -50 });
 
         // gsap scroll container
         gsapScroll(ScrollTrigger.getById(`scene-${index}`)?.start, item);
       }
     });
+
+    gsap
+      .timeline({
+        scrollTrigger: {
+          trigger: ".footer",
+          start: () => {
+            return footer ? `${scrollY - footer.clientHeight} top` : "top top"; // 안전한 접근
+          },
+          end: "bottom top", // 하단이 뷰포트의 20% 위치에 있을 때 끝남
+          invalidateOnRefresh: true, // 새로고침할 때 높이 재계산
+          toggleActions: "play play play reverse",
+        },
+      })
+      .to(".background", { opacity: 0 });
   }, []);
 
   const gsapScroll = (param, paramInner) => {
@@ -102,13 +159,23 @@ const Page = () => {
 
   return (
     <div>
-      <div className={`background ${styles.background}`} ref={backgroundRef}></div>
+      <div
+        className={`background ${styles.background}`}
+        ref={backgroundRef}
+      ></div>
       <div className={`contents_area ${styles.contents_area}`}>
         <div className={`scene ${styles.scene}`}>
-          <div id="scene-0" className={`scene_inner scene_inner_01 ${styles.scene_inner}`}>
+          <div
+            id="scene-0"
+            className={`scene_inner scene_inner_01 ${styles.scene_inner}`}
+          >
             <div className={`box_heading ${styles.box_heading}`}>
-              <h2 className={`heading_text ${styles.heading_text}`}>SECTION 01</h2>
-              <p className={`heading_desc ${styles.heading_desc}`}>section description</p>
+              <h2 className={`heading_text ${styles.heading_text}`}>
+                SECTION 01
+              </h2>
+              <p className={`heading_desc ${styles.heading_desc}`}>
+                section description
+              </p>
             </div>
             <div className={`box_content ${styles.box_content}`}>
               <div>BOX</div>
@@ -116,13 +183,22 @@ const Page = () => {
           </div>
         </div>
         <div className={`scene ${styles.scene}`}>
-          <div id="scene-1" className={`scene_inner scene_inner_02 ${styles.scene_inner}`}>
+          <div
+            id="scene-1"
+            className={`scene_inner scene_inner_02 ${styles.scene_inner}`}
+          >
             <div className={`box_heading ${styles.box_heading}`}>
-              <h2 className={`heading_text ${styles.heading_text}`}>SECTION 02</h2>
-              <p className={`heading_desc ${styles.heading_desc}`}>section description</p>
+              <h2 className={`heading_text ${styles.heading_text}`}>
+                SECTION 02
+              </h2>
+              <p className={`heading_desc ${styles.heading_desc}`}>
+                section description
+              </p>
             </div>
             <div className={`box_content ${styles.box_content}`}>
-              <div className={`scrollbasic__container ${styles.scrollbasic__container}`}>
+              <div
+                className={`scrollbasic__container ${styles.scrollbasic__container}`}
+              >
                 <div className={`box_basic ${styles.box_basic}`}>BOX1</div>
                 <div className={`box_basic ${styles.box_basic}`}>BOX2</div>
                 <div className={`box_basic ${styles.box_basic}`}>BOX3</div>
@@ -134,8 +210,12 @@ const Page = () => {
         <div className={`scene ${styles.scene}`}>
           <div className={`scene_inner scene_inner_03 ${styles.scene_inner}`}>
             <div className={`box_heading ${styles.box_heading}`}>
-              <h2 className={`heading_text ${styles.heading_text}`}>SECTION 03</h2>
-              <p className={`heading_desc ${styles.heading_desc}`}>section description</p>
+              <h2 className={`heading_text ${styles.heading_text}`}>
+                SECTION 03
+              </h2>
+              <p className={`heading_desc ${styles.heading_desc}`}>
+                section description
+              </p>
             </div>
             <div className={`box_content ${styles.box_content}`}>
               <div>BOX</div>
@@ -145,8 +225,12 @@ const Page = () => {
         <div className={`scene ${styles.scene}`}>
           <div className={`scene_inner scene_inner_04 ${styles.scene_inner}`}>
             <div className={`box_heading ${styles.box_heading}`}>
-              <h2 className={`heading_text ${styles.heading_text}`}>SECTION 04</h2>
-              <p className={`heading_desc ${styles.heading_desc}`}>section description</p>
+              <h2 className={`heading_text ${styles.heading_text}`}>
+                SECTION 04
+              </h2>
+              <p className={`heading_desc ${styles.heading_desc}`}>
+                section description
+              </p>
             </div>
             <div className={`box_content ${styles.box_content}`}>
               <div>BOX</div>
@@ -155,7 +239,15 @@ const Page = () => {
         </div>
       </div>
 
-      <div className={`endTrigger`} style={{ position: "relative", zIndex: "1", height: "100vh", backgroundColor: "red" }}></div>
+      <div
+        className={`endTrigger`}
+        style={{
+          position: "relative",
+          zIndex: "1",
+          height: "100vh",
+          backgroundColor: "red",
+        }}
+      ></div>
 
       <footer className={`footer ${styles.footer}`}>
         <h2 className={`text1`}>footer</h2>
