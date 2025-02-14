@@ -69,6 +69,7 @@ const Page = () => {
         end: () => `+=${item.offsetHeight * 5}`, // ⬅ 기존보다 더 길게 설정
         endTrigger: ".endTrigger",
         pin: true,
+        toggleActions: "play play play reverse",
         onEnter: () => {
           gsap.to(".background", {
             opacity: 1,
@@ -80,6 +81,13 @@ const Page = () => {
             opacity: 1,
             backgroundColor: bgColor[index],
           });
+        },
+        onLeaveBack: () => {
+          if (index === 0) {
+            gsap.to(".background", {
+              opacity: 0,
+            });
+          }
         },
       });
 
