@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "@studio-freight/lenis";
 import styles from "@/styles/backgroundpin.module.scss";
+import { useGSAP } from "@gsap/react";
 
 const useScrollPosition = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -11,9 +12,7 @@ const useScrollPosition = () => {
 
   useEffect(() => {
     const footer = document.querySelector(".footer") as HTMLElement;
-    const contents_area = document.querySelector(
-      ".contents_area"
-    ) as HTMLElement;
+    const contents_area = document.querySelector(".contents_area") as HTMLElement;
 
     if (!footer || !contents_area) return;
 
@@ -90,33 +89,16 @@ const Page = () => {
           .timeline({
             scrollTrigger: {
               trigger: sceneInner,
-              start: () =>
-                ScrollTrigger.getById(`scene-${index}`)?.start || "top top",
+              start: () => ScrollTrigger.getById(`scene-${index}`)?.start || "top top",
               end: () => `+=${item.offsetHeight * 5}`, // ⬅ 기존보다 더 길게 설정
               scrub: true,
             },
           })
-          .fromTo(
-            sceneInner.querySelector(".heading_text"),
-            { opacity: 0, y: 50, duration: 0.1 },
-            { opacity: 1, y: 0, duration: 0.1 }
-          )
-          .fromTo(
-            sceneInner.querySelector(".heading_desc"),
-            { opacity: 0, y: 50, duration: 0.1 },
-            { opacity: 1, y: 0, duration: 0.1 }
-          )
-          .fromTo(
-            sceneInner.querySelector(".box_content"),
-            { opacity: 0, y: 50 },
-            { opacity: 1, y: 0, duration: 0.1 }
-          )
+          .fromTo(sceneInner.querySelector(".heading_text"), { opacity: 0, y: 50, duration: 0.1 }, { opacity: 1, y: 0, duration: 0.1 })
+          .fromTo(sceneInner.querySelector(".heading_desc"), { opacity: 0, y: 50, duration: 0.1 }, { opacity: 1, y: 0, duration: 0.1 })
+          .fromTo(sceneInner.querySelector(".box_content"), { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.1 })
           .add("label")
-          .to(
-            sceneInner.querySelector(".box_content"),
-            { opacity: 0, y: -50 },
-            "+=3"
-          )
+          .to(sceneInner.querySelector(".box_content"), { opacity: 0, y: -50 }, "+=3")
           .to(sceneInner.querySelector(".box_heading"), { opacity: 0, y: -50 });
 
         // gsap scroll container
@@ -157,25 +139,48 @@ const Page = () => {
     }
   };
 
+  useGSAP(() => {
+    const textArray = gsap.utils.toArray<HTMLElement>(".scrollscale__text");
+    const timeline = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".scrollscale",
+        pin: true,
+        pinSpacing: true,
+        start: "top top",
+        end: "+=500%",
+        scrub: 0.5,
+      },
+    });
+    timeline
+      .to(".scrollscale__heading", { y: -100, opacity: 0 })
+      .to(".scrollscale__video", 3, { scale: 0.7, borderRadius: 50 })
+      .to(".scrollscale__textbox", 2, { opacity: 1, backgroundColor: "#641875" })
+      .to(textArray, 5, { opacity: 1, stagger: 5 }, "+=2")
+      .to(".scrollscale__text", 2, { opacity: 0, y: -10 })
+      .to(".scrollscale__textbox", { opacity: 1, backgroundColor: "#641875" }, "+=5");
+  });
+
   return (
     <div>
-      <div
-        className={`background ${styles.background}`}
-        ref={backgroundRef}
-      ></div>
+      <section className={`scrollscale ${styles.scrollscale}`}>
+        <h1 className={`scrollscale__heading`}>HEADING TEXT 1</h1>
+        <div className={`${styles.scrollscale__video} scrollscale__video`}>
+          <img src="https://dummyimage.com/000/fff" alt="더미 이미지" />
+        </div>
+        <div className={`${styles.scrollscale__textbox} scrollscale__textbox`}>
+          <div className={`scrollscale__text ${styles.scrollscale__text}`}>TEST1</div>
+          <div className={`scrollscale__text ${styles.scrollscale__text}`}>TEST2</div>
+          <div className={`scrollscale__text ${styles.scrollscale__text}`}>TEST3</div>
+        </div>
+      </section>
+
+      <div className={`background ${styles.background}`} ref={backgroundRef}></div>
       <div className={`contents_area ${styles.contents_area}`}>
         <div className={`scene ${styles.scene}`}>
-          <div
-            id="scene-0"
-            className={`scene_inner scene_inner_01 ${styles.scene_inner}`}
-          >
+          <div id="scene-0" className={`scene_inner scene_inner_01 ${styles.scene_inner}`}>
             <div className={`box_heading ${styles.box_heading}`}>
-              <h2 className={`heading_text ${styles.heading_text}`}>
-                SECTION 01
-              </h2>
-              <p className={`heading_desc ${styles.heading_desc}`}>
-                section description
-              </p>
+              <h2 className={`heading_text ${styles.heading_text}`}>SECTION 01</h2>
+              <p className={`heading_desc ${styles.heading_desc}`}>section description</p>
             </div>
             <div className={`box_content ${styles.box_content}`}>
               <div>BOX</div>
@@ -183,22 +188,13 @@ const Page = () => {
           </div>
         </div>
         <div className={`scene ${styles.scene}`}>
-          <div
-            id="scene-1"
-            className={`scene_inner scene_inner_02 ${styles.scene_inner}`}
-          >
+          <div id="scene-1" className={`scene_inner scene_inner_02 ${styles.scene_inner}`}>
             <div className={`box_heading ${styles.box_heading}`}>
-              <h2 className={`heading_text ${styles.heading_text}`}>
-                SECTION 02
-              </h2>
-              <p className={`heading_desc ${styles.heading_desc}`}>
-                section description
-              </p>
+              <h2 className={`heading_text ${styles.heading_text}`}>SECTION 02</h2>
+              <p className={`heading_desc ${styles.heading_desc}`}>section description</p>
             </div>
             <div className={`box_content ${styles.box_content}`}>
-              <div
-                className={`scrollbasic__container ${styles.scrollbasic__container}`}
-              >
+              <div className={`scrollbasic__container ${styles.scrollbasic__container}`}>
                 <div className={`box_basic ${styles.box_basic}`}>BOX1</div>
                 <div className={`box_basic ${styles.box_basic}`}>BOX2</div>
                 <div className={`box_basic ${styles.box_basic}`}>BOX3</div>
@@ -210,12 +206,8 @@ const Page = () => {
         <div className={`scene ${styles.scene}`}>
           <div className={`scene_inner scene_inner_03 ${styles.scene_inner}`}>
             <div className={`box_heading ${styles.box_heading}`}>
-              <h2 className={`heading_text ${styles.heading_text}`}>
-                SECTION 03
-              </h2>
-              <p className={`heading_desc ${styles.heading_desc}`}>
-                section description
-              </p>
+              <h2 className={`heading_text ${styles.heading_text}`}>SECTION 03</h2>
+              <p className={`heading_desc ${styles.heading_desc}`}>section description</p>
             </div>
             <div className={`box_content ${styles.box_content}`}>
               <div>BOX</div>
@@ -225,12 +217,8 @@ const Page = () => {
         <div className={`scene ${styles.scene}`}>
           <div className={`scene_inner scene_inner_04 ${styles.scene_inner}`}>
             <div className={`box_heading ${styles.box_heading}`}>
-              <h2 className={`heading_text ${styles.heading_text}`}>
-                SECTION 04
-              </h2>
-              <p className={`heading_desc ${styles.heading_desc}`}>
-                section description
-              </p>
+              <h2 className={`heading_text ${styles.heading_text}`}>SECTION 04</h2>
+              <p className={`heading_desc ${styles.heading_desc}`}>section description</p>
             </div>
             <div className={`box_content ${styles.box_content}`}>
               <div>BOX</div>
@@ -245,7 +233,7 @@ const Page = () => {
           position: "relative",
           zIndex: "1",
           height: "100vh",
-          backgroundColor: "red",
+          backgroundColor: "antiquewhite",
         }}
       ></div>
 
